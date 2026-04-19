@@ -6,20 +6,20 @@ stages:
     deps:
     - path: data/processed/customers.csv
       hash: md5
-      md5: ab4d56f66bfcd7a8278eb3136bf78b68
-      size: 471853
+      md5: 46a0b2cceac4d04207ec44703b8ba964
+      size: 478886
     - path: data/processed/tickets.csv
       hash: md5
-      md5: af63168ddc303aa2bbbaeb3979d56413
-      size: 1323901
+      md5: 51251a361adb04a3c2060e6b88b2fd6a
+      size: 1344561
     - path: scripts/create_splits.py
       hash: md5
-      md5: 81882750e8654326a31edc18a941b163
-      size: 2166
+      md5: 3d8866dcc7dbcfc22cde98b33e705e3a
+      size: 2229
     - path: src/feature_engineering.py
       hash: md5
-      md5: 28966c8fe6bfa57138ec7fd4d32e05a1
-      size: 5767
+      md5: b445728c01db605c13eba1a8cc793641
+      size: 5905
     params:
       params.yaml:
         random_state: 42
@@ -28,54 +28,54 @@ stages:
     outs:
     - path: data/splits/test.csv
       hash: md5
-      md5: 49e30914f553b5a1dcd8469b1902f8b0
-      size: 130014
+      md5: 2eeb73bd236c34d4eee437381f6b939e
+      size: 131070
     - path: data/splits/train.csv
       hash: md5
-      md5: 27224030595b0b98c2b517ffc3ecdbaa
-      size: 607443
+      md5: a9610344193adc74ecb9929f1ebb6828
+      size: 612366
     - path: data/splits/val.csv
       hash: md5
-      md5: fdd590305f2b88c7df88a7ad21418791
-      size: 130005
+      md5: 6e82325a97eeb7e1bdcfd36ca681bdf8
+      size: 131061
   train:
     cmd: python scripts/train_experiments.py --train-csv data/splits/train.csv 
       --test-csv data/splits/test.csv
     deps:
     - path: data/processed/tickets.csv
       hash: md5
-      md5: af63168ddc303aa2bbbaeb3979d56413
-      size: 1323901
+      md5: 51251a361adb04a3c2060e6b88b2fd6a
+      size: 1344561
     - path: data/splits/test.csv
       hash: md5
-      md5: 49e30914f553b5a1dcd8469b1902f8b0
-      size: 130014
+      md5: 2eeb73bd236c34d4eee437381f6b939e
+      size: 131070
     - path: data/splits/train.csv
       hash: md5
-      md5: 27224030595b0b98c2b517ffc3ecdbaa
-      size: 607443
+      md5: a9610344193adc74ecb9929f1ebb6828
+      size: 612366
     - path: scripts/train.py
       hash: md5
-      md5: 125f60528697011513b53e6095b0d94f
-      size: 6566
+      md5: 89df9c55fbfee513bec1a62320e93b22
+      size: 6742
     - path: scripts/train_experiments.py
       hash: md5
-      md5: a8f3a409e5ffacf3efdc53e0d5374799
-      size: 8117
+      md5: ebdfd6ec4ff223c2e8095eb1d4f87616
+      size: 8346
     - path: src/feature_engineering.py
       hash: md5
-      md5: 28966c8fe6bfa57138ec7fd4d32e05a1
-      size: 5767
+      md5: b445728c01db605c13eba1a8cc793641
+      size: 5905
     - path: src/model_factory.py
       hash: md5
-      md5: e0a4de0bdeded4288298aa37a05661d2
-      size: 1619
+      md5: 5ca4341950fabed9bed7e24531b49563
+      size: 1666
     outs:
     - path: models/churn_pipeline.joblib
       hash: md5
-      md5: 7c7386397fd98964d1c4b4de7b5236f4
+      md5: 9a94b5f40895a667f9fa87f601b96aba
       size: 4801
     - path: models/training_metrics.json
       hash: md5
-      md5: e0f3a0ea728e27c707795060fbb72335
-      size: 709
+      md5: d8032b849b083c6016206f5de9ef7f79
+      size: 737
