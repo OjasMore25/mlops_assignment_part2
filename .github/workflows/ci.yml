@@ -1,0 +1,55 @@
+name: CI-CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  test-build-push:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: DVC pipeline (splits + train)
+        run: |
+          dvc repro
+
+      - name: Metric quality gate
+        run: |
+          python scripts/metric_gate.py
+
+      - name: Drift report (non-blocking)
+        run: |
+          python scripts/check_drift.py || true
+
+      - name: Run tests
+        run: |
+          pytest
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/churn-risk-service:latest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/churn-risk-service:latest

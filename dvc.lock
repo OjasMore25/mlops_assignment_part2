@@ -1,0 +1,81 @@
+schema: '2.0'
+stages:
+  split:
+    cmd: python scripts/create_splits.py --val-size 0.15 --test-size 0.15 
+      --random-state 42
+    deps:
+    - path: data/processed/customers.csv
+      hash: md5
+      md5: ab4d56f66bfcd7a8278eb3136bf78b68
+      size: 471853
+    - path: data/processed/tickets.csv
+      hash: md5
+      md5: af63168ddc303aa2bbbaeb3979d56413
+      size: 1323901
+    - path: scripts/create_splits.py
+      hash: md5
+      md5: 81882750e8654326a31edc18a941b163
+      size: 2166
+    - path: src/feature_engineering.py
+      hash: md5
+      md5: 28966c8fe6bfa57138ec7fd4d32e05a1
+      size: 5767
+    params:
+      params.yaml:
+        random_state: 42
+        test_size: 0.15
+        val_size: 0.15
+    outs:
+    - path: data/splits/test.csv
+      hash: md5
+      md5: 49e30914f553b5a1dcd8469b1902f8b0
+      size: 130014
+    - path: data/splits/train.csv
+      hash: md5
+      md5: 27224030595b0b98c2b517ffc3ecdbaa
+      size: 607443
+    - path: data/splits/val.csv
+      hash: md5
+      md5: fdd590305f2b88c7df88a7ad21418791
+      size: 130005
+  train:
+    cmd: python scripts/train_experiments.py --train-csv data/splits/train.csv 
+      --test-csv data/splits/test.csv
+    deps:
+    - path: data/processed/tickets.csv
+      hash: md5
+      md5: af63168ddc303aa2bbbaeb3979d56413
+      size: 1323901
+    - path: data/splits/test.csv
+      hash: md5
+      md5: 49e30914f553b5a1dcd8469b1902f8b0
+      size: 130014
+    - path: data/splits/train.csv
+      hash: md5
+      md5: 27224030595b0b98c2b517ffc3ecdbaa
+      size: 607443
+    - path: scripts/train.py
+      hash: md5
+      md5: 125f60528697011513b53e6095b0d94f
+      size: 6566
+    - path: scripts/train_experiments.py
+      hash: md5
+      md5: a8f3a409e5ffacf3efdc53e0d5374799
+      size: 8117
+    - path: src/feature_engineering.py
+      hash: md5
+      md5: 28966c8fe6bfa57138ec7fd4d32e05a1
+      size: 5767
+    - path: src/model_factory.py
+      hash: md5
+      md5: e0a4de0bdeded4288298aa37a05661d2
+      size: 1619
+    outs:
+    - path: models/churn_pipeline.joblib
+      hash: md5
+      md5: 7c7386397fd98964d1c4b4de7b5236f4
+      size: 4801
+    - path: models/training_metrics.json
+      hash: md5
+      md5: e0f3a0ea728e27c707795060fbb72335
+      size: 709

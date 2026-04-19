@@ -1,0 +1,35 @@
+# DVC pipeline (Part 2 — data splits + train artifact).
+# `customer_features.csv` remains Git-tracked for this repo; to move it under DVC:
+#   git rm --cached data/processed/customer_features.csv && dvc add data/processed/customer_features.csv
+
+stages:
+  split:
+    cmd: python scripts/create_splits.py --val-size ${val_size} --test-size ${test_size} --random-state ${random_state}
+    deps:
+      - scripts/create_splits.py
+      - src/feature_engineering.py
+      - data/processed/customers.csv
+      - data/processed/tickets.csv
+    outs:
+      - data/splits/train.csv
+      - data/splits/val.csv
+      - data/splits/test.csv
+    params:
+      - params.yaml:
+          - val_size
+          - test_size
+          - random_state
+
+  train:
+    cmd: python scripts/train_experiments.py --train-csv data/splits/train.csv --test-csv data/splits/test.csv
+    deps:
+      - scripts/train_experiments.py
+      - scripts/train.py
+      - src/model_factory.py
+      - src/feature_engineering.py
+      - data/processed/tickets.csv
+      - data/splits/train.csv
+      - data/splits/test.csv
+    outs:
+      - models/churn_pipeline.joblib
+      - models/training_metrics.json

@@ -1,0 +1,71 @@
+# Continuous Training triggered after drift is detected on drifted ticket data.
+name: CT-on-drift
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply_drifted_tickets:
+        description: "If true, overwrite data/processed/tickets.csv with drifted generator output before retrain"
+        type: boolean
+        default: false
+
+jobs:
+  drift-and-retrain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Ensure splits exist (DVC)
+        run: |
+          dvc repro split
+
+      - name: Generate drifted ticket log (simulated production drift)
+        run: |
+          python scripts/simulate_ticket_drift.py --output data/processed/tickets_drifted.csv
+
+      - name: Drift check vs frozen reference split
+        id: drift
+        run: |
+          python scripts/check_drift.py \
+            --tickets data/processed/tickets_drifted.csv \
+            --ks-threshold 0.12 \
+            --fail-on-drift
+        continue-on-error: true
+
+      - name: Record drift outcome
+        run: |
+          echo "drift_detected=${{ steps.drift.outcome == 'failure' }}" >> $GITHUB_ENV
+
+      - name: Optional — replace tickets.csv with drifted data
+        if: ${{ github.event.inputs.apply_drifted_tickets == 'true' }}
+        run: |
+          cp data/processed/tickets_drifted.csv data/processed/tickets.csv
+
+      - name: Continuous training — retrain all candidates after drift
+        if: steps.drift.outcome == 'failure'
+        run: |
+          dvc repro train
+
+      - name: Run tests after CT
+        if: steps.drift.outcome == 'failure'
+        run: |
+          pytest
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ct-drift-artifacts
+          path: |
+            models/drift_report.json
+            models/training_metrics.json
+            models/production_manifest.json

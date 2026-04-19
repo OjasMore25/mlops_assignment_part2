@@ -1,0 +1,26 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# virtual environment
+.venv/
+
+# pytest artifacts
+.pytest_cache/
+
+# git
+.git
+.gitignore
+
+# notebooks
+notebooks/
+
+# tests (not needed in runtime container)
+tests/
+
+# editor configs
+.vscode/
+
+# OS files
+.DS_Store

@@ -1,0 +1,6 @@
+{
+  "best_model_kind": "logistic_regression",
+  "mlflow_run_id": "86522e4935aa4616aa046f1ffb283943",
+  "registered_model_name": "churn_sklearn",
+  "selection_score": 1.0
+}

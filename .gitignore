@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+
+# virtual env
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+
+# VSCode
+.vscode/
+
+# Data
+data/raw/*
+
+# Trained artifacts (regenerate with python scripts/train.py)
+models/*.joblib
+models/training_metrics.json
+models/drift_report.json
+data/processed/tickets_drifted.csv
+
+# MLflow local store
+mlruns/
+mlflow.db

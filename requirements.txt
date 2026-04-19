@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+pandas
+pydantic
+pytest
+httpx
+prometheus-client
+dvc
+mlflow
+scipy
+evidently
+scikit-learn
+joblib
+pandera
+psutil

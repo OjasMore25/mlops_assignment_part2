@@ -1,0 +1,4 @@
+# Used by DVC stages (see dvc.yaml)
+val_size: 0.15
+test_size: 0.15
+random_state: 42
