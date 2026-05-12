@@ -156,3 +156,4 @@ Telco-style **customers** plus **synthetic tickets** from [`src/ticket_generator
 ---
 
 # Ojas - 2022BCD0043
+# Docker_hub - https://hub.docker.com/repository/docker/ojasmore/churn-risk-service/general
